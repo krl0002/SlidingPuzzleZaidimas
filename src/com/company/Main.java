@@ -5,7 +5,6 @@ import javax.swing.JFrame;
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
         JFrame frame = new JFrame("Sliding Puzzle");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setContentPane(new SlidingPuzzleInterface());
@@ -13,4 +12,5 @@ public class Main {
         frame.show();
         frame.setResizable(false);
     }
+
 }

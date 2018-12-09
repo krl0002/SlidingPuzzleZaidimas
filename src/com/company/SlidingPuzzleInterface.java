@@ -5,7 +5,8 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class SlidingPuzzleInterface extends JPanel {
-    private Interface Interface;
+
+    private Interface iface;
     private SlidingPuzzleLogic logic = new SlidingPuzzleLogic();
     private int mouseClicks = 0;
 
@@ -17,70 +18,85 @@ public class SlidingPuzzleInterface extends JPanel {
         controlPanel.setLayout(new FlowLayout());
         controlPanel.add(startGame);
 
-        Interface = new Interface();
-
+        iface = new Interface();
 
         this.setLayout(new BorderLayout());
         this.add(controlPanel, BorderLayout.SOUTH);
-        this.add(Interface, BorderLayout.CENTER);
-
-
+        this.add(iface, BorderLayout.CENTER);
     }
 
     class Interface extends JPanel implements MouseListener {
-        private static final int SIZE = 2;
-
-        private static final int LANGELIO_DYDIS = 90;
+        private static final int SIZE = 3;
+        private static final int BUTTON_SIZE = 90;
         private Font fontStyle;
 
         public Interface() {
-            fontStyle = new Font("SansSerif", Font.BOLD, 35);
-            this.setPreferredSize(new Dimension(LANGELIO_DYDIS * SIZE, LANGELIO_DYDIS * SIZE));
+            fontStyle = new Font("SansSerif", Font.BOLD, 45);
+            this.setPreferredSize(new Dimension(BUTTON_SIZE * SIZE, BUTTON_SIZE * SIZE));
             this.setBackground(Color.BLACK);
             this.addMouseListener(this);
         }
 
         public void paintComponent(java.awt.Graphics g) {
             super.paintComponent(g);
-            for (int r = 0; r < SIZE; r++) {
-                for (int c = 0; c < SIZE; c++) {
-                    int x = c * LANGELIO_DYDIS;
-                    int y = r * LANGELIO_DYDIS;
-                    int skaicius = logic.getNumber(r, c);
-                    if (skaicius != 0) {
+            for (int row = 0; row < SIZE; row++) {
+                for (int column = 0; column < SIZE; column++) {
+                    int x = column * BUTTON_SIZE;
+                    int y = row * BUTTON_SIZE;
+                    int number = logic.getNumber(row, column);
+                    if (number != 0) {
                         g.setColor(Color.WHITE);
-                        g.fillRect(x + 2, y + 2, LANGELIO_DYDIS - 3, LANGELIO_DYDIS - 3);
+                        g.fillRect(x + 2, y + 2, BUTTON_SIZE - 3, BUTTON_SIZE - 3);
                         g.setColor(Color.black);
                         g.setFont(fontStyle);
-                        g.drawString("" + skaicius, x + 30, y + (3 * LANGELIO_DYDIS) / 4);
+                        g.drawString("" + number, x + 30, y + (3 * BUTTON_SIZE) / 4);
                     }
                 }
             }
         }
-            public void mousePressed(MouseEvent e){
-                int column = e.getX() / LANGELIO_DYDIS;
-                int row = e.getY() / LANGELIO_DYDIS;
-                logic.pajudintiLang(row, column);
-                this.repaint();
 
-                mouseClicks++;
-                if(logic.gameOver() == SIZE*SIZE) {
-                    JOptionPane.showMessageDialog(null, "Zaidimas baigtas, atlikote: "+mouseClicks+" ejimus",
-                            "Zaidimas baigtas", JOptionPane.INFORMATION_MESSAGE);
-                }
+        public void mousePressed(MouseEvent e) {
+            int column = e.getX() / BUTTON_SIZE;
+            int row = e.getY() / BUTTON_SIZE;
 
+            logic.moveButton(row, column);
+            this.repaint();
+            mouseClicks++;
+
+            if (logic.isGameOver() == SIZE * SIZE) {
+                JOptionPane.showMessageDialog(null, "Žaidimas baigtas, atlikote: " + mouseClicks + " ėjimus",
+                        "Žaidimas baigtas!", JOptionPane.INFORMATION_MESSAGE);
             }
-            public void mouseClicked (MouseEvent e) {};
-            public void mouseReleased (MouseEvent e) {};
-            public void mouseEntered (MouseEvent e) {};
-            public void mouseExited (MouseEvent e) {};
+
         }
 
-        public class start implements ActionListener {
-            public void actionPerformed(ActionEvent e) {
-                mouseClicks = 0;
-                logic.refresh();
-                Interface.repaint();
-            }
+        public void mouseClicked(MouseEvent e) {
+        }
+
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        public void mouseExited(MouseEvent e) {
         }
     }
+
+    public class start implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            mouseClicks = 0;
+            logic.refresh();
+            iface.repaint();
+        }
+    }
+
+    public SlidingPuzzleInterface.Interface getIface() {
+        return iface;
+    }
+
+    public int getMouseClicks() {
+        return mouseClicks;
+    }
+
+}
